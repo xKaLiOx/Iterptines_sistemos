@@ -1,0 +1,7 @@
+../Core/Src/LCD_16x2_PARALLEL.c:12:6:SEND_4_BIT	16	static
+../Core/Src/LCD_16x2_PARALLEL.c:25:6:LCD_SEND_COMMAND	16	static
+../Core/Src/LCD_16x2_PARALLEL.c:36:6:LCD_SEND_DATA	16	static
+../Core/Src/LCD_16x2_PARALLEL.c:48:6:LCD_CLEAR	8	static
+../Core/Src/LCD_16x2_PARALLEL.c:53:6:LCD_CLEAR_DRAM	16	static
+../Core/Src/LCD_16x2_PARALLEL.c:67:6:LCD_Init	8	static
+../Core/Src/LCD_16x2_PARALLEL.c:81:6:LCD_SEND_STR	24	static
