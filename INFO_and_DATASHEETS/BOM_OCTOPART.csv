@@ -1,0 +1,20 @@
+Qty,MPN,Manufacturer,Part Description,Distributor,Unit Price,Line Total
+2,C0805C561J5GACTU,KEMET,560pF ±5% 50V C0G 0805 Multilayer Ceramic Capacitors MLCC - SMD/SMT RoHS,Mouser,0.114,0.228
+1,AP2112K-3.3TRG1,Diodes Inc.,AP2112 Series 0.6 A 3.3 V Fixed Output SMT LDO Linear Regulator - SOT23-5,Mouser,0.504,0.504
+2,STM32F103C8T6,STMicroelectronics,ARM Cortex-M3 STM32 F1 Microcontroller 32-Bit 72MHz 64kB FLASH LQFP48 STM32F103C8T6,Farnell,5.25,10.5
+5,C0402C104K8PACTU,KEMET,Capacitor; Ceramic; Cap; .100uF; Tol 10%; SMT; Vol-Rtg 10V; X5R; Tape and Reel | KEMET C0402C104K8PACTU,DigiKey,0.09,0.45
+2,CC0805KKX7R6BB105,Yageo,"Ceramic Capacitor, Ceramic, 10V, 10% +Tol, 10% -Tol, X7R, 15% TC, 1uF, Surface Mount, 0805",Distrelec,0.02,0.04
+1,68000-106HLF,Amphenol Communications Solutions,Conn Unshrouded Header HDR 6 POS 2.54mm Solder ST Top Entry Thru-Hole BergStik® Bag,DigiKey,0.57,0.57
+1,68000-106HLF,Amphenol Communications Solutions,Conn Unshrouded Header HDR 6 POS 2.54mm Solder ST Top Entry Thru-Hole BergStik® Bag,DigiKey,0.57,0.57
+1,68000-106HLF,Amphenol Communications Solutions,Conn Unshrouded Header HDR 6 POS 2.54mm Solder ST Top Entry Thru-Hole BergStik® Bag,DigiKey,0.57,0.57
+2,CRCW0805820KFKEA,Vishay,CRCW FIXED RESISTOR 0805 (2012Metric) Chip Resistor ±1% ±100ppm/C 820kOhm 0.125W 1/8W,Distrelec,0.01,0.02
+2,MBB02070C1002FCT00,Vishay,"Fixed Resistor, Metal Film, 0.4W, 10000ohm, 350V, 1% +/-Tol, 50ppm/Cel, Through Hole Mount",DigiKey,0.09,0.18
+2,MCP6002-E/P,Microchip,MCP6002 Series 6 V 1 MHz Through Hole Low-Power Operational Amplifier - PDIP-8,DigiKey,0.46,0.92
+3,GRM21BR61E106KA73L,Murata,Multilayer Ceramic Capacitors Mlcc - Smd/Smt 10 Uf 25 Vdc 10% 0805 X5R,Distrelec,0.04,0.12
+2,CRCW080520K0FKEA,Vishay,Res Thick Film 0805 20K Ohm 1% 1/8W ±100ppm/°C Molded SMD Paper T/R,DigiKey,0.09,0.18
+3,CFR50J330R,TE Connectivity,"Resistor, Carbon Film, Res 330 Ohms, Pwr-Rtg 0.66 W, Tol 5%, Axial | TE Connectivity CFR50J330R",DigiKey,0.09,0.27
+2,TEMD6200FX01,Vishay,TEMD6200 Series 540 nm 60° 40 nA (Ira ) Ambient Light Sensor 0805,Farnell,0.745,1.49
+1,TS02-66-60-BK-260-LCR-D,Same Sky,TS02 Series SPST-NO 0.05A 12VDC Through Hole Tactile Switch,DigiKey,0.09,0.09
+1,150080GS75000,Wurth Elektronik,"WURTH ELEKTRONIK - 150080GS75000 - LED, Green, SMD, 0805, 30 mA, 3.2 V, 520 nm",DigiKey,0.16,0.16
+1,162H BA BW,Displaytech,LCD Character Display Modules & Accessories 16x2 Char Display STN Y/G 6 oclock,Mouser,15.15,15.15
+,,,,,,32.00966599
