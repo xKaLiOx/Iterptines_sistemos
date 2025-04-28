@@ -1,0 +1,4 @@
+C:\Users\Linas\Desktop\univero darbai\Iterptines_sistemos\Inzinerinis_projektas\Programa\Programa\x64\Debug\Programa.vcxproj.AssemblyReference.cache
+C:\Users\Linas\Desktop\univero darbai\Iterptines_sistemos\Inzinerinis_projektas\Programa\Programa\x64\Debug\Programa.MyForm.resources
+C:\Users\Linas\Desktop\univero darbai\Iterptines_sistemos\Inzinerinis_projektas\Programa\Programa\x64\Debug\Programa.vcxproj.GenerateResource.cache
+C:\Users\Linas\Desktop\univero darbai\Iterptines_sistemos\Inzinerinis_projektas\Programa\Programa\x64\Debug\Programa.Pasirinkimu_langas.resources
