@@ -1,2 +1,20 @@
+<<<<<<< HEAD
 ﻿  Pasirinkimu_langas.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+=======
+﻿  MyForm.cpp
+  Pasirinkimu_langas.cpp
+C:\Users\Linas\Desktop\univero darbai\Iterptines_sistemos\Inzinerinis_projektas\Programa\MyForm.h(549,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'MyForm.cpp')
+  
+C:\Users\Linas\Desktop\univero darbai\Iterptines_sistemos\Inzinerinis_projektas\Programa\MyForm.h(586,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'MyForm.cpp')
+  
+C:\Users\Linas\Desktop\univero darbai\Iterptines_sistemos\Inzinerinis_projektas\Programa\MyForm.h(699,6): warning C4101: 'x': unreferenced local variable
+  (compiling source file 'MyForm.cpp')
+  
+C:\Users\Linas\Desktop\univero darbai\Iterptines_sistemos\Inzinerinis_projektas\Programa\MyForm.cpp(6,6): warning C4829: Possibly incorrect parameters to function main. Consider 'int main(Platform::Array<Platform::String^>^ argv)'
+  .NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
+  Generating Code...
+  Pasirinkimu_langas.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+>>>>>>> 96bf16b (Update_PC_program#)
   Programa.vcxproj -> C:\Users\Linas\Desktop\univero darbai\Iterptines_sistemos\Inzinerinis_projektas\Programa\x64\Debug\Programa.exe

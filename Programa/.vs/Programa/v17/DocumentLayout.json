@@ -41,8 +41,12 @@
               "RelativeToolTip": "..\\..\\..\\PRAEJE MODULIAI\\Elektroniniu sistemu programavimas\\ASTUNTAS_LAB_final\\Langas_main.h",
               "ViewState": "AgIAADADAAAAAAAAAAAAAEUDAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+<<<<<<< HEAD
               "WhenOpened": "2025-04-27T19:25:47.207Z",
               "EditorCaption": ""
+=======
+              "WhenOpened": "2025-04-27T19:25:47.207Z"
+>>>>>>> 96bf16b (Update_PC_program#)
             },
             {
               "$type": "Document",
@@ -52,7 +56,11 @@
               "RelativeDocumentMoniker": "MyForm.h",
               "ToolTip": "C:\\Users\\Linas\\Desktop\\univero darbai\\Iterptines_sistemos\\Inzinerinis_projektas\\Programa\\MyForm.h",
               "RelativeToolTip": "MyForm.h",
+<<<<<<< HEAD
               "ViewState": "AgIAALYCAAAAAAAAAAAwwM0CAAADAAAAAAAAAA==",
+=======
+              "ViewState": "AgIAAAQAAAAAAAAAAAAewBIAAAAAAAAAAAAAAA==",
+>>>>>>> 96bf16b (Update_PC_program#)
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-04-21T09:19:26.23Z",
               "EditorCaption": ""
@@ -66,8 +74,12 @@
               "ToolTip": "C:\\Users\\Linas\\Desktop\\univero darbai\\Iterptines_sistemos\\Inzinerinis_projektas\\Programa\\MyForm.h [Design]",
               "RelativeToolTip": "MyForm.h [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+<<<<<<< HEAD
               "WhenOpened": "2025-04-27T15:13:32.146Z",
               "EditorCaption": " [Design]"
+=======
+              "WhenOpened": "2025-04-27T15:13:32.146Z"
+>>>>>>> 96bf16b (Update_PC_program#)
             }
           ]
         },
@@ -80,6 +92,7 @@
               "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
             }
           ]
+<<<<<<< HEAD
         },
         {
           "DockedWidth": 47,
@@ -90,6 +103,8 @@
               "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
             }
           ]
+=======
+>>>>>>> 96bf16b (Update_PC_program#)
         }
       ]
     }
