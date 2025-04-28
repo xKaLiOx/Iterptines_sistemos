@@ -42,11 +42,15 @@
               "ViewState": "AgIAADADAAAAAAAAAAAAAEUDAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
 <<<<<<< HEAD
+<<<<<<< HEAD
               "WhenOpened": "2025-04-27T19:25:47.207Z",
               "EditorCaption": ""
 =======
               "WhenOpened": "2025-04-27T19:25:47.207Z"
 >>>>>>> 96bf16b (Update_PC_program#)
+=======
+              "WhenOpened": "2025-04-27T19:25:47.207Z"
+>>>>>>> 0d1f531 (Update_PC_program#)
             },
             {
               "$type": "Document",
@@ -57,10 +61,18 @@
               "ToolTip": "C:\\Users\\Linas\\Desktop\\univero darbai\\Iterptines_sistemos\\Inzinerinis_projektas\\Programa\\MyForm.h",
               "RelativeToolTip": "MyForm.h",
 <<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
               "ViewState": "AgIAALYCAAAAAAAAAAAwwM0CAAADAAAAAAAAAA==",
 =======
               "ViewState": "AgIAAAQAAAAAAAAAAAAewBIAAAAAAAAAAAAAAA==",
 >>>>>>> 96bf16b (Update_PC_program#)
+=======
+              "ViewState": "AgIAALYCAAAAAAAAAAAwwM0CAAADAAAAAAAAAA==",
+>>>>>>> 0d1f531 (Update_PC_program#)
+=======
+              "ViewState": "AgIAAIgCAAAAAAAAAAAAAJ4CAAAEAAAAAAAAAA==",
+>>>>>>> a5121e7 (Added UART Idle line for MCU Rx)
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-04-21T09:19:26.23Z",
               "EditorCaption": ""
@@ -75,11 +87,15 @@
               "RelativeToolTip": "MyForm.h [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
 <<<<<<< HEAD
+<<<<<<< HEAD
               "WhenOpened": "2025-04-27T15:13:32.146Z",
               "EditorCaption": " [Design]"
 =======
               "WhenOpened": "2025-04-27T15:13:32.146Z"
 >>>>>>> 96bf16b (Update_PC_program#)
+=======
+              "WhenOpened": "2025-04-27T15:13:32.146Z"
+>>>>>>> 0d1f531 (Update_PC_program#)
             }
           ]
         },
@@ -93,6 +109,7 @@
             }
           ]
 <<<<<<< HEAD
+<<<<<<< HEAD
         },
         {
           "DockedWidth": 47,
@@ -105,6 +122,8 @@
           ]
 =======
 >>>>>>> 96bf16b (Update_PC_program#)
+=======
+>>>>>>> 0d1f531 (Update_PC_program#)
         }
       ]
     }
