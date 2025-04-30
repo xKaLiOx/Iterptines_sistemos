@@ -1,7 +1,8 @@
-../Core/Src/main.c:106:5:main	17
-../Core/Src/main.c:268:6:SystemClock_Config	4
-../Core/Src/main.c:320:9:Voltage_to_lux	1
-../Core/Src/main.c:332:7:DELAY_US	4
-../Core/Src/main.c:344:7:HAL_TIM_PeriodElapsedCallback	3
-../Core/Src/main.c:358:7:HAL_GPIO_EXTI_Callback	5
-../Core/Src/main.c:385:6:Error_Handler	1
+../Core/Src/main.c:111:5:main	19
+../Core/Src/main.c:280:6:SystemClock_Config	4
+../Core/Src/main.c:332:9:Voltage_to_lux	1
+../Core/Src/main.c:344:7:DELAY_US	4
+../Core/Src/main.c:356:7:HAL_TIM_PeriodElapsedCallback	3
+../Core/Src/main.c:370:7:HAL_GPIO_EXTI_Callback	5
+../Core/Src/main.c:391:7:HAL_UARTEx_RxEventCallback	6
+../Core/Src/main.c:414:6:Error_Handler	1
