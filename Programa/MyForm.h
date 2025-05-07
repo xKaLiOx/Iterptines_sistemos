@@ -54,12 +54,22 @@ namespace Programa {
 ;
 
 	}
+	private: const UINT16 Point_number = 60;
+	private: const UINT16 Graph_shift_time = 10000; //in milliseccnds
+
 	public: bool Start_UART_flag = false;
-	private: String^ rxBuffer = "";
+	private: double margin = 0.1;//10% margin for Y axis
+	private: double maxy, miny;
 	private: static initonly String^ val = "value = ";
 	private: static initonly String^ atVal = " at ";
 	private: static initonly String^ msVal = " ms";
+	private: enum class GraphType{Difference, CHValues };
+	private: GraphType CurrentGraph = GraphType::CHValues;
+	private: GraphType PreviousGraph = GraphType::CHValues;
+	private: bool GraphChangeFlag = false;
+
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chartData;
+	private: System::Windows::Forms::Label^ labelmin;
 	public:
 
 	public:
@@ -67,21 +77,31 @@ namespace Programa {
 
 
 
-	private: System::Windows::Forms::Label^ label2;
-	private: System::Windows::Forms::Label^ label3;
-	private: System::Windows::Forms::Label^ label4;
+
+	private: System::Windows::Forms::Label^ labelmax;
+
+
 	private: System::Windows::Forms::Button^ buttonStart;
 
 	private: System::Windows::Forms::Label^ labelInfo;
 	private: System::Windows::Forms::Button^ buttonCloseCOM;
 	private: System::Windows::Forms::ProgressBar^ progressBar;
 	private: System::Windows::Forms::Button^ buttonOpenCOM;
-	private: System::Windows::Forms::Label^ label5;
-	private: System::Windows::Forms::Label^ label6;
-	private: System::Windows::Forms::Label^ label7;
+
+	private: System::Windows::Forms::Label^ labelmaxval;
+	private: System::Windows::Forms::Label^ labelminval;
+
+
 	private: System::Windows::Forms::Button^ buttonReset;
 	private: System::Windows::Forms::Button^ buttonExit;
 	private: System::Windows::Forms::Button^ buttonStore;
+	private: System::Windows::Forms::Timer^ timer2;
+	private: System::Windows::Forms::Label^ label2CHmax;
+
+	private: System::Windows::Forms::Label^ labelCH2min;
+
+
+
 
 	private: System::Windows::Forms::Button^ buttonStop;
 
@@ -125,46 +145,50 @@ namespace Programa {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::LineAnnotation^ lineAnnotation1 = (gcnew System::Windows::Forms::DataVisualization::Charting::LineAnnotation());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
 			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea3 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
 			System::Windows::Forms::DataVisualization::Charting::Legend^ legend3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^ series5 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			System::Windows::Forms::DataVisualization::Charting::LineAnnotation^ lineAnnotation2 = (gcnew System::Windows::Forms::DataVisualization::Charting::LineAnnotation());
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea4 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^ legend4 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^ series6 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			System::Windows::Forms::DataVisualization::Charting::Series^ series7 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			System::Windows::Forms::DataVisualization::Charting::Series^ series8 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			System::Windows::Forms::DataVisualization::Charting::Title^ title2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Title());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series4 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::Title^ title1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Title());
 			this->buttonUART_config = (gcnew System::Windows::Forms::Button());
 			this->serialPort1 = (gcnew System::IO::Ports::SerialPort(this->components));
 			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->chartData = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
-			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->label3 = (gcnew System::Windows::Forms::Label());
-			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->labelmin = (gcnew System::Windows::Forms::Label());
+			this->labelmax = (gcnew System::Windows::Forms::Label());
 			this->buttonStart = (gcnew System::Windows::Forms::Button());
 			this->buttonStop = (gcnew System::Windows::Forms::Button());
 			this->labelInfo = (gcnew System::Windows::Forms::Label());
 			this->buttonCloseCOM = (gcnew System::Windows::Forms::Button());
 			this->progressBar = (gcnew System::Windows::Forms::ProgressBar());
 			this->buttonOpenCOM = (gcnew System::Windows::Forms::Button());
-			this->label5 = (gcnew System::Windows::Forms::Label());
-			this->label6 = (gcnew System::Windows::Forms::Label());
-			this->label7 = (gcnew System::Windows::Forms::Label());
+			this->labelmaxval = (gcnew System::Windows::Forms::Label());
+			this->labelminval = (gcnew System::Windows::Forms::Label());
 			this->buttonReset = (gcnew System::Windows::Forms::Button());
 			this->buttonExit = (gcnew System::Windows::Forms::Button());
 			this->buttonStore = (gcnew System::Windows::Forms::Button());
+			this->timer2 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->label2CHmax = (gcnew System::Windows::Forms::Label());
+			this->labelCH2min = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chartData))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// buttonUART_config
 			// 
-			this->buttonUART_config->Location = System::Drawing::Point(45, 45);
+			this->buttonUART_config->Location = System::Drawing::Point(34, 37);
+			this->buttonUART_config->Margin = System::Windows::Forms::Padding(2);
 			this->buttonUART_config->Name = L"buttonUART_config";
-			this->buttonUART_config->Size = System::Drawing::Size(181, 41);
+			this->buttonUART_config->Size = System::Drawing::Size(136, 33);
 			this->buttonUART_config->TabIndex = 1;
 			this->buttonUART_config->Text = L"Configuration";
 			this->buttonUART_config->UseVisualStyleBackColor = true;
@@ -179,149 +203,173 @@ namespace Programa {
 			// 
 			// chart1
 			// 
-			chartArea3->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea3);
-			legend3->Name = L"Legend1";
-			this->chart1->Legends->Add(legend3);
+			chartArea1->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea1);
+			legend1->Name = L"Legend1";
+			this->chart1->Legends->Add(legend1);
 			this->chart1->Location = System::Drawing::Point(0, 0);
 			this->chart1->Name = L"chart1";
-			series5->ChartArea = L"ChartArea1";
-			series5->Legend = L"Legend1";
-			series5->Name = L"Series1";
-			this->chart1->Series->Add(series5);
+			series1->ChartArea = L"ChartArea1";
+			series1->Legend = L"Legend1";
+			series1->Name = L"Series1";
+			this->chart1->Series->Add(series1);
 			this->chart1->Size = System::Drawing::Size(300, 300);
 			this->chart1->TabIndex = 0;
 			this->chart1->Text = L"chart1";
 			// 
+			// timer1
+			// 
+			this->timer1->Interval = 200;
+			this->timer1->Tick += gcnew System::EventHandler(this, &MyForm::timer1_Tick);
+			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(42, 79);
+			this->label1->Location = System::Drawing::Point(32, 64);
+			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(0, 16);
+			this->label1->Size = System::Drawing::Size(0, 13);
 			this->label1->TabIndex = 2;
 			// 
 			// chartData
 			// 
-			lineAnnotation2->Name = L"LineAnnotation1";
-			lineAnnotation2->Visible = false;
-			this->chartData->Annotations->Add(lineAnnotation2);
+			lineAnnotation1->Name = L"LineAnnotation1";
+			lineAnnotation1->Visible = false;
+			this->chartData->Annotations->Add(lineAnnotation1);
 			this->chartData->BackColor = System::Drawing::Color::Silver;
 			this->chartData->BorderlineColor = System::Drawing::Color::Black;
-			chartArea4->AxisX->Enabled = System::Windows::Forms::DataVisualization::Charting::AxisEnabled::True;
-			chartArea4->AxisX->IntervalType = System::Windows::Forms::DataVisualization::Charting::DateTimeIntervalType::Number;
-			chartArea4->AxisX->IsLabelAutoFit = false;
-			chartArea4->AxisX->IsStartedFromZero = false;
-			chartArea4->AxisX->LabelStyle->Angle = 90;
-			chartArea4->AxisX->LabelStyle->Format = L"0";
-			chartArea4->AxisX->LabelStyle->Interval = 0;
-			chartArea4->AxisX->MajorGrid->Interval = 0;
-			chartArea4->AxisX->MajorTickMark->Interval = 0;
-			chartArea4->AxisX->MinorGrid->Enabled = true;
-			chartArea4->AxisX->MinorGrid->Interval = 200;
-			chartArea4->AxisX->MinorGrid->IntervalType = System::Windows::Forms::DataVisualization::Charting::DateTimeIntervalType::Number;
-			chartArea4->AxisX->MinorGrid->LineColor = System::Drawing::Color::DarkGray;
-			chartArea4->AxisX->MinorTickMark->Enabled = true;
-			chartArea4->AxisX->MinorTickMark->LineColor = System::Drawing::Color::DarkGray;
-			chartArea4->AxisX->Title = L"Time, ms";
-			chartArea4->AxisX->TitleFont = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10.2F, System::Drawing::FontStyle::Regular,
+			chartArea2->AxisX->Enabled = System::Windows::Forms::DataVisualization::Charting::AxisEnabled::True;
+			chartArea2->AxisX->LabelStyle->Angle = 90;
+			chartArea2->AxisX->LabelStyle->Format = L"0";
+			chartArea2->AxisX->LabelStyle->Interval = 0;
+			chartArea2->AxisX->MajorGrid->Interval = 0;
+			chartArea2->AxisX->MajorTickMark->Interval = 0;
+			chartArea2->AxisX->MinorGrid->Enabled = true;
+			chartArea2->AxisX->MinorGrid->Interval = 200;
+			chartArea2->AxisX->MinorGrid->IntervalType = System::Windows::Forms::DataVisualization::Charting::DateTimeIntervalType::Number;
+			chartArea2->AxisX->MinorGrid->LineColor = System::Drawing::Color::DarkGray;
+			chartArea2->AxisX->MinorTickMark->Enabled = true;
+			chartArea2->AxisX->MinorTickMark->LineColor = System::Drawing::Color::DarkGray;
+			chartArea2->AxisX->Title = L"Time, ms";
+			chartArea2->AxisX->TitleFont = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10.2F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			chartArea4->AxisY->Enabled = System::Windows::Forms::DataVisualization::Charting::AxisEnabled::True;
-			chartArea4->AxisY->IntervalAutoMode = System::Windows::Forms::DataVisualization::Charting::IntervalAutoMode::VariableCount;
-			chartArea4->AxisY->IsLogarithmic = true;
-			chartArea4->AxisY->MajorGrid->Interval = 0;
-			chartArea4->AxisY->Minimum = 1;
-			chartArea4->AxisY->MinorGrid->Enabled = true;
-			chartArea4->AxisY->MinorGrid->LineColor = System::Drawing::Color::DarkGray;
-			chartArea4->AxisY->MinorTickMark->Enabled = true;
-			chartArea4->AxisY->MinorTickMark->LineColor = System::Drawing::Color::DarkGray;
-			chartArea4->AxisY->Title = L"Illuminance, lux";
-			chartArea4->AxisY->TitleFont = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10.2F, System::Drawing::FontStyle::Regular,
+			chartArea2->AxisY->Enabled = System::Windows::Forms::DataVisualization::Charting::AxisEnabled::True;
+			chartArea2->AxisY->IntervalAutoMode = System::Windows::Forms::DataVisualization::Charting::IntervalAutoMode::VariableCount;
+			chartArea2->AxisY->IsLogarithmic = true;
+			chartArea2->AxisY->IsStartedFromZero = false;
+			chartArea2->AxisY->MajorGrid->Interval = 0;
+			chartArea2->AxisY->Minimum = 1;
+			chartArea2->AxisY->MinorGrid->Enabled = true;
+			chartArea2->AxisY->MinorGrid->LineColor = System::Drawing::Color::DarkGray;
+			chartArea2->AxisY->MinorTickMark->Enabled = true;
+			chartArea2->AxisY->MinorTickMark->LineColor = System::Drawing::Color::DarkGray;
+			chartArea2->AxisY->Title = L"Illuminance, lux";
+			chartArea2->AxisY->TitleFont = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10.2F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			chartArea4->BackColor = System::Drawing::Color::White;
-			chartArea4->CursorX->IsUserEnabled = true;
-			chartArea4->CursorX->IsUserSelectionEnabled = true;
-			chartArea4->CursorX->SelectionColor = System::Drawing::Color::IndianRed;
-			chartArea4->CursorY->SelectionColor = System::Drawing::Color::IndianRed;
-			chartArea4->Name = L"ChartArea1";
-			this->chartData->ChartAreas->Add(chartArea4);
+			chartArea2->BackColor = System::Drawing::Color::White;
+			chartArea2->CursorX->IsUserEnabled = true;
+			chartArea2->CursorX->IsUserSelectionEnabled = true;
+			chartArea2->CursorX->SelectionColor = System::Drawing::Color::IndianRed;
+			chartArea2->CursorY->SelectionColor = System::Drawing::Color::IndianRed;
+			chartArea2->Name = L"ChartArea1";
+			chartArea3->AxisX->IntervalAutoMode = System::Windows::Forms::DataVisualization::Charting::IntervalAutoMode::VariableCount;
+			chartArea3->AxisX->IntervalType = System::Windows::Forms::DataVisualization::Charting::DateTimeIntervalType::Number;
+			chartArea3->AxisX->IsStartedFromZero = false;
+			chartArea3->AxisX->MinorGrid->LineColor = System::Drawing::Color::DimGray;
+			chartArea3->AxisY->IntervalAutoMode = System::Windows::Forms::DataVisualization::Charting::IntervalAutoMode::VariableCount;
+			chartArea3->AxisY->IntervalType = System::Windows::Forms::DataVisualization::Charting::DateTimeIntervalType::Number;
+			chartArea3->AxisY->IsStartedFromZero = false;
+			chartArea3->AxisY->LabelStyle->Format = L"F1";
+			chartArea3->AxisY->MajorGrid->Interval = 0;
+			chartArea3->AxisY->MajorTickMark->Interval = 0;
+			chartArea3->AxisY->MinorGrid->Enabled = true;
+			chartArea3->AxisY->MinorGrid->LineColor = System::Drawing::Color::DimGray;
+			chartArea3->BackColor = System::Drawing::Color::White;
+			chartArea3->CursorX->IsUserEnabled = true;
+			chartArea3->CursorX->IsUserSelectionEnabled = true;
+			chartArea3->CursorX->SelectionColor = System::Drawing::Color::IndianRed;
+			chartArea3->Name = L"ChartArea2";
+			chartArea3->Visible = false;
+			this->chartData->ChartAreas->Add(chartArea2);
+			this->chartData->ChartAreas->Add(chartArea3);
 			this->chartData->Cursor = System::Windows::Forms::Cursors::Cross;
-			legend4->BorderColor = System::Drawing::Color::Red;
-			legend4->Enabled = false;
-			legend4->LegendStyle = System::Windows::Forms::DataVisualization::Charting::LegendStyle::Column;
-			legend4->Name = L"Legend1";
-			legend4->Position->Auto = false;
-			legend4->Position->Height = 16.88312F;
-			legend4->Position->Width = 32;
-			legend4->Position->X = 60;
-			legend4->Position->Y = 8;
-			this->chartData->Legends->Add(legend4);
-			this->chartData->Location = System::Drawing::Point(407, 12);
+			legend2->BorderColor = System::Drawing::Color::Red;
+			legend2->DockedToChartArea = L"ChartArea1";
+			legend2->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
+			legend2->LegendStyle = System::Windows::Forms::DataVisualization::Charting::LegendStyle::Column;
+			legend2->Name = L"Legend1";
+			legend3->BorderColor = System::Drawing::Color::Red;
+			legend3->DockedToChartArea = L"ChartArea2";
+			legend3->Docking = System::Windows::Forms::DataVisualization::Charting::Docking::Bottom;
+			legend3->Enabled = false;
+			legend3->LegendStyle = System::Windows::Forms::DataVisualization::Charting::LegendStyle::Column;
+			legend3->Name = L"Legend2";
+			this->chartData->Legends->Add(legend2);
+			this->chartData->Legends->Add(legend3);
+			this->chartData->Location = System::Drawing::Point(305, 10);
+			this->chartData->Margin = System::Windows::Forms::Padding(2);
 			this->chartData->Name = L"chartData";
-			series6->BorderWidth = 4;
-			series6->ChartArea = L"ChartArea1";
-			series6->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
-			series6->Legend = L"Legend1";
-			series6->MarkerColor = System::Drawing::Color::IndianRed;
-			series6->Name = L"CH1";
-			series7->BorderWidth = 4;
-			series7->ChartArea = L"ChartArea1";
-			series7->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
-			series7->Legend = L"Legend1";
-			series7->MarkerColor = System::Drawing::Color::Black;
-			series7->Name = L"CH2";
-			series7->YValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::Double;
-			series8->BorderWidth = 4;
-			series8->ChartArea = L"ChartArea1";
-			series8->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
-			series8->Legend = L"Legend1";
-			series8->Name = L"Difference";
-			this->chartData->Series->Add(series6);
-			this->chartData->Series->Add(series7);
-			this->chartData->Series->Add(series8);
-			this->chartData->Size = System::Drawing::Size(624, 499);
+			series2->BorderWidth = 4;
+			series2->ChartArea = L"ChartArea1";
+			series2->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
+			series2->Legend = L"Legend1";
+			series2->MarkerColor = System::Drawing::Color::IndianRed;
+			series2->Name = L"CH1";
+			series3->BorderWidth = 4;
+			series3->ChartArea = L"ChartArea1";
+			series3->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
+			series3->Legend = L"Legend1";
+			series3->MarkerColor = System::Drawing::Color::Black;
+			series3->Name = L"CH2";
+			series4->BorderWidth = 4;
+			series4->ChartArea = L"ChartArea2";
+			series4->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
+			series4->Legend = L"Legend2";
+			series4->Name = L"Difference";
+			series4->XValueType = System::Windows::Forms::DataVisualization::Charting::ChartValueType::UInt64;
+			this->chartData->Series->Add(series2);
+			this->chartData->Series->Add(series3);
+			this->chartData->Series->Add(series4);
+			this->chartData->Size = System::Drawing::Size(468, 405);
 			this->chartData->TabIndex = 7;
 			this->chartData->Text = L"Luminance";
-			title2->Name = L"Title1";
-			title2->Visible = false;
-			this->chartData->Titles->Add(title2);
+			title1->Name = L"Title1";
+			title1->Visible = false;
+			this->chartData->Titles->Add(title1);
 			this->chartData->Visible = false;
 			// 
-			// label2
+			// labelmin
 			// 
-			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(82, 256);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(28, 16);
-			this->label2->TabIndex = 9;
-			this->label2->Text = L"min";
-			this->label2->Visible = false;
+			this->labelmin->AutoSize = true;
+			this->labelmin->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->labelmin->Location = System::Drawing::Point(42, 205);
+			this->labelmin->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->labelmin->Name = L"labelmin";
+			this->labelmin->Size = System::Drawing::Size(38, 20);
+			this->labelmin->TabIndex = 9;
+			this->labelmin->Text = L"MIN";
+			this->labelmin->Visible = false;
 			// 
-			// label3
+			// labelmax
 			// 
-			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(310, 256);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(32, 16);
-			this->label3->TabIndex = 10;
-			this->label3->Text = L"max";
-			this->label3->Visible = false;
-			// 
-			// label4
-			// 
-			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(196, 256);
-			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(30, 16);
-			this->label4->TabIndex = 11;
-			this->label4->Text = L"avg";
-			this->label4->Visible = false;
+			this->labelmax->AutoSize = true;
+			this->labelmax->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->labelmax->Location = System::Drawing::Point(180, 205);
+			this->labelmax->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->labelmax->Name = L"labelmax";
+			this->labelmax->Size = System::Drawing::Size(44, 20);
+			this->labelmax->TabIndex = 10;
+			this->labelmax->Text = L"MAX";
+			this->labelmax->Visible = false;
 			// 
 			// buttonStart
 			// 
-			this->buttonStart->Location = System::Drawing::Point(269, 45);
+			this->buttonStart->Location = System::Drawing::Point(202, 37);
+			this->buttonStart->Margin = System::Windows::Forms::Padding(2);
 			this->buttonStart->Name = L"buttonStart";
-			this->buttonStart->Size = System::Drawing::Size(106, 39);
+			this->buttonStart->Size = System::Drawing::Size(80, 32);
 			this->buttonStart->TabIndex = 12;
 			this->buttonStart->Text = L"Start";
 			this->buttonStart->UseVisualStyleBackColor = true;
@@ -329,9 +377,10 @@ namespace Programa {
 			// 
 			// buttonStop
 			// 
-			this->buttonStop->Location = System::Drawing::Point(269, 90);
+			this->buttonStop->Location = System::Drawing::Point(202, 73);
+			this->buttonStop->Margin = System::Windows::Forms::Padding(2);
 			this->buttonStop->Name = L"buttonStop";
-			this->buttonStop->Size = System::Drawing::Size(106, 39);
+			this->buttonStop->Size = System::Drawing::Size(80, 32);
 			this->buttonStop->TabIndex = 13;
 			this->buttonStop->Text = L"Stop";
 			this->buttonStop->UseVisualStyleBackColor = true;
@@ -340,17 +389,18 @@ namespace Programa {
 			// labelInfo
 			// 
 			this->labelInfo->AutoSize = true;
-			this->labelInfo->Location = System::Drawing::Point(42, 107);
+			this->labelInfo->Location = System::Drawing::Point(32, 87);
+			this->labelInfo->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->labelInfo->Name = L"labelInfo";
-			this->labelInfo->Size = System::Drawing::Size(0, 16);
+			this->labelInfo->Size = System::Drawing::Size(0, 13);
 			this->labelInfo->TabIndex = 14;
 			// 
 			// buttonCloseCOM
 			// 
-			this->buttonCloseCOM->Location = System::Drawing::Point(45, 146);
-			this->buttonCloseCOM->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->buttonCloseCOM->Location = System::Drawing::Point(34, 119);
+			this->buttonCloseCOM->Margin = System::Windows::Forms::Padding(2);
 			this->buttonCloseCOM->Name = L"buttonCloseCOM";
-			this->buttonCloseCOM->Size = System::Drawing::Size(181, 36);
+			this->buttonCloseCOM->Size = System::Drawing::Size(136, 29);
 			this->buttonCloseCOM->TabIndex = 17;
 			this->buttonCloseCOM->Text = L"Close port";
 			this->buttonCloseCOM->UseVisualStyleBackColor = true;
@@ -358,57 +408,51 @@ namespace Programa {
 			// 
 			// progressBar
 			// 
-			this->progressBar->Location = System::Drawing::Point(45, 188);
-			this->progressBar->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->progressBar->Location = System::Drawing::Point(34, 153);
+			this->progressBar->Margin = System::Windows::Forms::Padding(2);
 			this->progressBar->Maximum = 1;
 			this->progressBar->Name = L"progressBar";
-			this->progressBar->Size = System::Drawing::Size(181, 23);
+			this->progressBar->Size = System::Drawing::Size(136, 19);
 			this->progressBar->Step = 1;
 			this->progressBar->TabIndex = 16;
 			// 
 			// buttonOpenCOM
 			// 
-			this->buttonOpenCOM->Location = System::Drawing::Point(45, 104);
-			this->buttonOpenCOM->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->buttonOpenCOM->Location = System::Drawing::Point(34, 84);
+			this->buttonOpenCOM->Margin = System::Windows::Forms::Padding(2);
 			this->buttonOpenCOM->Name = L"buttonOpenCOM";
-			this->buttonOpenCOM->Size = System::Drawing::Size(181, 36);
+			this->buttonOpenCOM->Size = System::Drawing::Size(136, 29);
 			this->buttonOpenCOM->TabIndex = 15;
 			this->buttonOpenCOM->Text = L"Open port";
 			this->buttonOpenCOM->UseVisualStyleBackColor = true;
 			this->buttonOpenCOM->Click += gcnew System::EventHandler(this, &MyForm::buttonOpenCOM_Click);
 			// 
-			// label5
+			// labelmaxval
 			// 
-			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(168, 311);
-			this->label5->Name = L"label5";
-			this->label5->Padding = System::Windows::Forms::Padding(40, 20, 40, 20);
-			this->label5->Size = System::Drawing::Size(80, 56);
-			this->label5->TabIndex = 20;
+			this->labelmaxval->AutoSize = true;
+			this->labelmaxval->Location = System::Drawing::Point(172, 247);
+			this->labelmaxval->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->labelmaxval->Name = L"labelmaxval";
+			this->labelmaxval->Padding = System::Windows::Forms::Padding(30, 16, 30, 16);
+			this->labelmaxval->Size = System::Drawing::Size(60, 45);
+			this->labelmaxval->TabIndex = 19;
 			// 
-			// label6
+			// labelminval
 			// 
-			this->label6->AutoSize = true;
-			this->label6->Location = System::Drawing::Point(282, 311);
-			this->label6->Name = L"label6";
-			this->label6->Padding = System::Windows::Forms::Padding(40, 20, 40, 20);
-			this->label6->Size = System::Drawing::Size(80, 56);
-			this->label6->TabIndex = 19;
-			// 
-			// label7
-			// 
-			this->label7->AutoSize = true;
-			this->label7->Location = System::Drawing::Point(54, 311);
-			this->label7->Name = L"label7";
-			this->label7->Padding = System::Windows::Forms::Padding(40, 20, 40, 20);
-			this->label7->Size = System::Drawing::Size(80, 56);
-			this->label7->TabIndex = 18;
+			this->labelminval->AutoSize = true;
+			this->labelminval->Location = System::Drawing::Point(31, 247);
+			this->labelminval->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->labelminval->Name = L"labelminval";
+			this->labelminval->Padding = System::Windows::Forms::Padding(30, 16, 30, 16);
+			this->labelminval->Size = System::Drawing::Size(60, 45);
+			this->labelminval->TabIndex = 18;
 			// 
 			// buttonReset
 			// 
-			this->buttonReset->Location = System::Drawing::Point(269, 188);
+			this->buttonReset->Location = System::Drawing::Point(202, 153);
+			this->buttonReset->Margin = System::Windows::Forms::Padding(2);
 			this->buttonReset->Name = L"buttonReset";
-			this->buttonReset->Size = System::Drawing::Size(106, 30);
+			this->buttonReset->Size = System::Drawing::Size(80, 24);
 			this->buttonReset->TabIndex = 21;
 			this->buttonReset->Text = L"Reset";
 			this->buttonReset->UseVisualStyleBackColor = true;
@@ -417,9 +461,10 @@ namespace Programa {
 			// buttonExit
 			// 
 			this->buttonExit->ForeColor = System::Drawing::Color::Red;
-			this->buttonExit->Location = System::Drawing::Point(269, 484);
+			this->buttonExit->Location = System::Drawing::Point(202, 393);
+			this->buttonExit->Margin = System::Windows::Forms::Padding(2);
 			this->buttonExit->Name = L"buttonExit";
-			this->buttonExit->Size = System::Drawing::Size(106, 27);
+			this->buttonExit->Size = System::Drawing::Size(80, 22);
 			this->buttonExit->TabIndex = 22;
 			this->buttonExit->Text = L"Exit";
 			this->buttonExit->UseVisualStyleBackColor = true;
@@ -427,37 +472,61 @@ namespace Programa {
 			// 
 			// buttonStore
 			// 
-			this->buttonStore->Location = System::Drawing::Point(45, 484);
+			this->buttonStore->Location = System::Drawing::Point(34, 393);
+			this->buttonStore->Margin = System::Windows::Forms::Padding(2);
 			this->buttonStore->Name = L"buttonStore";
-			this->buttonStore->Size = System::Drawing::Size(181, 27);
+			this->buttonStore->Size = System::Drawing::Size(136, 22);
 			this->buttonStore->TabIndex = 23;
 			this->buttonStore->Text = L"Store";
 			this->buttonStore->UseVisualStyleBackColor = true;
 			this->buttonStore->Click += gcnew System::EventHandler(this, &MyForm::buttonStore_Click);
 			// 
+			// label2CHmax
+			// 
+			this->label2CHmax->AutoSize = true;
+			this->label2CHmax->Location = System::Drawing::Point(172, 314);
+			this->label2CHmax->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label2CHmax->Name = L"label2CHmax";
+			this->label2CHmax->Padding = System::Windows::Forms::Padding(30, 16, 30, 16);
+			this->label2CHmax->Size = System::Drawing::Size(60, 45);
+			this->label2CHmax->TabIndex = 25;
+			this->label2CHmax->Visible = false;
+			// 
+			// labelCH2min
+			// 
+			this->labelCH2min->AutoSize = true;
+			this->labelCH2min->Location = System::Drawing::Point(31, 314);
+			this->labelCH2min->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->labelCH2min->Name = L"labelCH2min";
+			this->labelCH2min->Padding = System::Windows::Forms::Padding(30, 16, 30, 16);
+			this->labelCH2min->Size = System::Drawing::Size(60, 45);
+			this->labelCH2min->TabIndex = 24;
+			this->labelCH2min->Visible = false;
+			// 
 			// MyForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1043, 523);
+			this->ClientSize = System::Drawing::Size(782, 425);
+			this->Controls->Add(this->label2CHmax);
+			this->Controls->Add(this->labelCH2min);
 			this->Controls->Add(this->buttonStore);
 			this->Controls->Add(this->buttonExit);
 			this->Controls->Add(this->buttonReset);
-			this->Controls->Add(this->label5);
-			this->Controls->Add(this->label6);
-			this->Controls->Add(this->label7);
+			this->Controls->Add(this->labelmaxval);
+			this->Controls->Add(this->labelminval);
 			this->Controls->Add(this->buttonCloseCOM);
 			this->Controls->Add(this->progressBar);
 			this->Controls->Add(this->buttonOpenCOM);
 			this->Controls->Add(this->labelInfo);
 			this->Controls->Add(this->buttonStop);
 			this->Controls->Add(this->buttonStart);
-			this->Controls->Add(this->label4);
-			this->Controls->Add(this->label3);
-			this->Controls->Add(this->label2);
+			this->Controls->Add(this->labelmax);
+			this->Controls->Add(this->labelmin);
 			this->Controls->Add(this->chartData);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->buttonUART_config);
+			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"MyForm";
 			this->Text = L"LuxIn";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
@@ -476,13 +545,11 @@ namespace Programa {
 			serialPort1->DiscardInBuffer();
 			serialPort1->DiscardOutBuffer();
 			serialPort1->Close();
-			buttonOpenCOM->Enabled = true;
-			progressBar->Value = 0;
 		}
+		buttonOpenCOM->Enabled = true;
+		progressBar->Value = 0;
 		Pasirinkimu_langas^ configWindow = gcnew Pasirinkimu_langas(UART);
 		configWindow->ShowDialog();
-
-		this->labelInfo->Text = "";
 	}
 	private: System::Void serialPort1_DataReceived(System::Object^ sender, System::IO::Ports::SerialDataReceivedEventArgs^ e) {
 		if (serialPort1->IsOpen && Start_UART_flag)
@@ -507,26 +574,68 @@ namespace Programa {
 	}
 	private: void ProcessUARTMessage(String^ message)
 	{
-
 		   if (message->Contains("CH1-CH2")) {
 			   ParseDifferenceData(message);
+			   if (CurrentGraph == GraphType::CHValues)
+			   {
+				   ChangeGraphType(GraphType::Difference);
+				   CurrentGraph = GraphType::Difference;
+			   }
 		   }
 		   else if (message->Contains("CH1") || message->Contains("CH2")) {
 			   ParseCHData(message);
+			   if (CurrentGraph == GraphType::Difference)
+			   {
+				   ChangeGraphType(GraphType::CHValues);
+				   CurrentGraph = GraphType::CHValues;
+			   }
 		   }
 		   else
 		   {
 			   Console::WriteLine("No packet found");
 		   }
-		   if (chartData->Series["CH1"]->Points->Count > 50 && chartData->Series["CH2"]->Points->Count > 50)
+		   if (CurrentGraph == GraphType::CHValues)
+		   {
+		   if (chartData->Series["CH1"]->Points->Count > Point_number && chartData->Series["CH2"]->Points->Count > Point_number)
 		   {
 			   chartData->Series["CH1"]->Points->RemoveAt(0);  // Remove the first point (oldest)
 			   chartData->Series["CH2"]->Points->RemoveAt(0);  // Remove the first point (oldest)
+			}
+		   int pointCount = chartData->Series["CH1"]->Points->Count;
+		   if (pointCount > 0)
+		   {
+			   double lastX = chartData->Series["CH1"]->Points[pointCount - 1]->XValue;
+
+			   chartData->ChartAreas["ChartArea1"]->AxisX->Minimum = lastX - Graph_shift_time; // or use milliseconds window
+			   chartData->ChartAreas["ChartArea1"]->AxisX->Maximum = lastX;
 		   }
-		   if (chartData->Series["Difference"]->Points->Count > 50)
+		   }
+
+		   if (CurrentGraph == GraphType::Difference)
+		   {
+			   maxy = chartData->Series["Difference"]->Points->FindMaxByValue()->YValues[0];
+			   miny = chartData->Series["Difference"]->Points->FindMinByValue()->YValues[0];
+
+			   if (maxy != miny)
+			   {
+				   chartData->ChartAreas["ChartArea2"]->AxisY->Minimum = miny+ margin*miny;
+				   chartData->ChartAreas["ChartArea2"]->AxisY->Maximum = maxy+margin*maxy;
+			   }
+		   if (chartData->Series["Difference"]->Points->Count > Point_number)
 		   {
 			   chartData->Series["Difference"]->Points->RemoveAt(0);  // Remove the first point (oldest)
+			   chartData->Invalidate();
 		   }
+		   int pointCount = chartData->Series["Difference"]->Points->Count;
+		   if (pointCount > 0)
+		   {
+			   double lastX = chartData->Series["Difference"]->Points[pointCount - 1]->XValue;
+
+			   chartData->ChartAreas["ChartArea2"]->AxisX->Minimum = lastX - Graph_shift_time; // or use milliseconds window
+			   chartData->ChartAreas["ChartArea2"]->AxisX->Maximum = lastX;
+		   }
+		   }
+
 	 }
 private: void ParseCHData(String^ Packet)
 {
@@ -584,7 +693,6 @@ private: void ParseDifferenceData(String^ Packet)
 
 		Difference = Convert::ToDouble(valueString); //lux
 		Time = Convert::ToDouble(timeString); //ms
-
 		if (Packet->Contains("CH1-CH2"))
 		{
 			chartData->Series["Difference"]->Points->AddXY(Time, Difference);
@@ -632,20 +740,51 @@ private: System::Void buttonOpenCOM_Click(System::Object^ sender, System::EventA
 	}
 }
 private: System::Void buttonCloseCOM_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	this->labelmin->Visible = false;
+	this->labelmax->Visible = false;
+	this->labelmaxval->Visible = false;
+	this->labelminval->Visible = false;
+	this->labelCH2min->Visible = false;
+	this->label2CHmax->Visible = false;
+
 	if (serialPort1->IsOpen)
 	{
-		serialPort1->DiscardInBuffer();
-		serialPort1->DiscardOutBuffer();
-		serialPort1->Close();
-		buttonOpenCOM->Enabled = true;
+		try
+		{
+			serialPort1->DiscardInBuffer();
+			serialPort1->DiscardOutBuffer();
+			serialPort1->Close();
+			buttonOpenCOM->Enabled = true;
+		}
+		catch (Exception^ ex)
+		{
+			MessageBox::Show(ex->Message + "IO warning", "Warning", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		}
 	}
 
 	progressBar->Value = 0;
 }
 private: System::Void buttonReset_Click(System::Object^ sender, System::EventArgs^ e) {
-	this->chartData->Series["CH1"]->Points->Clear();
-	this->chartData->Series["CH2"]->Points->Clear();
-	this->chartData->Series["Difference"]->Points->Clear();
+	chartData->SuspendLayout();
+
+	this->labelminval->Text = " ";
+	this->labelmaxval->Text = " ";
+	this->labelCH2min->Text = " ";
+	this->label2CHmax->Text = " ";
+
+	if (CurrentGraph == GraphType::CHValues)
+	{
+		this->chartData->Series["CH1"]->Points->Clear();
+		this->chartData->Series["CH2"]->Points->Clear();
+	}
+	else
+	{
+		this->chartData->Series["Difference"]->Points->Clear();
+	}
+	chartData->ResumeLayout();
+	chartData->Refresh();
+
 }
 private: System::Void buttonExit_Click(System::Object^ sender, System::EventArgs^ e) {
 	if (MessageBox::Show("Are you sure?", "Warning", MessageBoxButtons::YesNo, MessageBoxIcon::Exclamation) == Windows::Forms::DialogResult::Yes)
@@ -671,6 +810,17 @@ private: System::Void buttonStart_Click(System::Object^ sender, System::EventArg
 			{
 				Start_UART_flag = true;
 				chartData->Visible = true;
+				this->labelmin->Visible = true;
+				this->labelmax->Visible = true;
+				this->labelmaxval->Visible = true;
+				this->labelminval->Visible = true;
+				if (CurrentGraph == GraphType::CHValues)
+				{
+				this->labelCH2min->Visible = true;
+				this->label2CHmax->Visible = true;
+				}
+
+				this->timer1->Enabled = true;
 			}
 
 		}
@@ -686,6 +836,8 @@ private: System::Void buttonStop_Click(System::Object^ sender, System::EventArgs
 			if (Send_UART_data("Stop") != -1)
 			{
 			Start_UART_flag = false;
+
+			this->timer1->Enabled = false;
 			}
 		}
 		serialPort1->DiscardInBuffer();
@@ -698,27 +850,92 @@ private: System::Void buttonStore_Click(System::Object^ sender, System::EventArg
 	FILE* fptr;
 	int x;
 	const char file_name[] = "SavedFiles.csv";
-	String^ testas = "Nepavyko atidaryti failo";
+	String^ file_error = "Couldn't open the file";
 	String^ file_link = gcnew String(file_name);
-	String^ VISAS = String::Concat("Duomenys patalpinti sekmingai faile ", file_link);
+	String^ Formatted_string = String::Concat("Data was succesfully exported ", file_link);
 
 	opened_file = fopen_s(&fptr, file_name, "w");
 	if (opened_file != 0)
 	{
-		System::Windows::Forms::MessageBox::Show(this, "Nepavyko atidaryti failo");
+		System::Windows::Forms::MessageBox::Show(this, file_error,"Error");
 	}
 	else
 	{
-		fprintf(fptr, "\"Time, ms\",\"CH1, lux\",\"CH2, lux\"\n");
-		/*
-		for (int i = 0; i < ApdorojimuiLastNumber; i++)
+		if (CurrentGraph == GraphType::CHValues)
 		{
-			kuris = i * this->timerRezistorius->Interval / 1000;
-			fprintf(fptr, "\"%-d\";\"%.2f\"\n", kuris, ApdorojimuiData[i]);
+			fprintf(fptr, "\"Time, ms\",\"CH1, lux\",\"CH2, lux\"\n");
+			for (int i = 0; i < this->chartData->Series["CH1"]->Points->Count; i++)
+			{
+				fprintf(fptr, "\"%.0f\",\"%.1f\",\"%.1f\"\n", this->chartData->Series["CH1"]->Points[i]->XValue, this->chartData->Series["CH1"]->Points[i]->YValues[0], this->chartData->Series["CH2"]->Points[i]->YValues[0]);
+			}
+			Windows::Forms::MessageBox::Show(this, Formatted_string, "SUCCESS", MessageBoxButtons::OK, MessageBoxIcon::Information);
+
+			fclose(fptr);
 		}
-		Windows::Forms::MessageBox::Show(this, VISAS, "Vaizduote", MessageBoxButtons::OK, MessageBoxIcon::Information);
-		*/
-		fclose(fptr);
+		else
+		{
+			fprintf(fptr, "\"Time, ms\",\"CH1-CH2, lux\"\n");
+			for (int i = 0; i < this->chartData->Series["Difference"]->Points->Count; i++)
+			{
+				fprintf(fptr, "\"%.0f\",\"%.1f\"\n", this->chartData->Series["Difference"]->Points[i]->XValue, this->chartData->Series["Difference"]->Points[i]->YValues[0]);
+			}
+			Windows::Forms::MessageBox::Show(this, Formatted_string, "SUCCESS", MessageBoxButtons::OK, MessageBoxIcon::Information);
+
+			fclose(fptr);
+		}
+
+	}
+}
+		private: void ChangeGraphType(GraphType CurrentGraphType)
+		{
+			chartData->SuspendLayout();
+			if (CurrentGraph == GraphType::CHValues)
+			{
+				this->chartData->Series["CH1"]->Points->Clear();
+				this->chartData->Series["CH2"]->Points->Clear();
+			}
+			else
+			{
+				this->chartData->Series["Difference"]->Points->Clear();
+			}
+			if (CurrentGraphType == GraphType::CHValues)
+			{
+				chartData->ChartAreas["ChartArea1"]->Visible = true;
+				chartData->ChartAreas["ChartArea2"]->Visible = false;
+				chartData->Legends["Legend2"]->Enabled = false;
+				chartData->Legends["Legend1"]->Enabled = true;
+			}
+			else if (CurrentGraphType == GraphType::Difference)
+			{
+				chartData->Legends["Legend2"]->Enabled = true;
+				chartData->Legends["Legend1"]->Enabled = false;
+				chartData->ChartAreas["ChartArea1"]->Visible = false;
+				chartData->ChartAreas["ChartArea2"]->Visible = true;
+				chartData->ChartAreas["ChartArea2"]->AxisY->Minimum = Double::NaN;  // Auto
+				chartData->ChartAreas["ChartArea2"]->AxisY->Maximum = Double::NaN;  // Auto
+				chartData->ChartAreas["ChartArea2"]->AxisY->IsLogarithmic = false; // Ensure linear scale
+			}
+			chartData->ResumeLayout();
+			chartData->Refresh();
+		}
+private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+	if (CurrentGraph == GraphType::Difference && this->chartData->Series["Difference"]->Points->Count > 0)
+	{
+		this->labelCH2min->Visible = false;
+		this->label2CHmax->Visible = false;
+		this->labelminval->Text = Convert::ToString(this->chartData->Series["Difference"]->Points->FindMinByValue()->YValues[0]);
+		this->labelmaxval->Text = Convert::ToString(this->chartData->Series["Difference"]->Points->FindMaxByValue()->YValues[0]);
+
+	}
+	else if (CurrentGraph == GraphType::CHValues && this->chartData->Series["CH1"]->Points->Count > 0 && this->chartData->Series["CH2"]->Points->Count > 0)
+	{
+		this->labelCH2min->Visible = true;
+		this->label2CHmax->Visible = true;
+		this->labelminval->Text = Convert::ToString(this->chartData->Series["CH1"]->Points->FindMinByValue()->YValues[0]);
+		this->labelmaxval->Text = Convert::ToString(this->chartData->Series["CH1"]->Points->FindMaxByValue()->YValues[0]);
+
+		this->labelCH2min->Text = Convert::ToString(this->chartData->Series["CH2"]->Points->FindMinByValue()->YValues[0]);;
+		this->label2CHmax->Text = Convert::ToString(this->chartData->Series["CH2"]->Points->FindMaxByValue()->YValues[0]);;
 	}
 }
 };
