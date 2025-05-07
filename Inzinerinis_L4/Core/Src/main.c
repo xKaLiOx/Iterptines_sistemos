@@ -44,6 +44,7 @@
 #define ADC_BUFFER_SIZE 240
 #define UART_BUFFER_SIZE 40
 #define LCD_BUFFER_SIZE 32
+#define UART_RX_SIZE 16
 
 #define ADC_V_Step 8.05861e-4f
 
@@ -71,7 +72,7 @@ volatile uint16_t ADC_Samples[ADC_BUFFER_SIZE] = {0};
 volatile float ADC_Voltages[NUM_OF_CHANNELS] = {0};
 volatile double LUX_Values[NUM_OF_CHANNELS-1] = {0};
 volatile double LUX_Difference;
-
+volatile uint8_t pData_RX[UART_RX_SIZE] = {0};
 char UART_data[UART_BUFFER_SIZE];
 
 uint8_t ERROR_FLAG = 0;
@@ -80,7 +81,7 @@ volatile uint8_t UART_UPDATE_FLAG = 0;
 volatile uint8_t ADC_CALC_AVG_FLAG = 0;
 volatile uint8_t LCD_SHOW_TYPE = SHOW_ABSOLUTE;
 volatile uint8_t LCD_CLEAR_ONCE = 0;
-
+volatile uint8_t UART_SEND_FLAG = 0; // flag from PC to start UART data transmission
 
 volatile uint8_t LCD_Delay_cnt;
 
@@ -176,6 +177,13 @@ int main(void)
   LCD_SEND_COMMAND(LCD_SET_DISPLAY_DEFAULT);
   HAL_Delay(2000);
   LCD_CLEAR();
+
+  if(HAL_UARTEx_ReceiveToIdle_IT(&huart2, pData_RX, UART_RX_SIZE) != HAL_OK)
+  {
+  	sprintf(LCD_top_text,"ERROR UART");
+  	sprintf(LCD_bottom_text,"CHECK CABLE");
+  	ERROR_FLAG = 1;
+  }
 
 	if(ERROR_FLAG) Error_Handler();//REIKIA PALEISTI TAIMERI TIM6 PRIES ATVAIZDAVIMA, us delay
   /* USER CODE END 2 */
@@ -375,6 +383,24 @@ void SystemClock_Config(void)
 			LCD_top_text[x] = ' ';
 			LCD_bottom_text[x] = ' ';
 		}
+	}
+
+	void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+	{
+		char Start_string[] = "Start\r\n";
+		char Stop_string[] = "Stop\r\n";
+		if(huart == &huart2)
+		{
+			if(Size == strlen(Start_string) && strncmp(Start_string,(char*)pData_RX,Size)==0)
+			{
+				UART_SEND_FLAG = 1;
+			}
+			else if(Size == strlen(Stop_string) && strncmp(Stop_string,(char*)pData_RX,Size)==0)
+			{
+				UART_SEND_FLAG = 0;
+			}
+		}
+		HAL_UARTEx_ReceiveToIdle_IT(&huart2, pData_RX, UART_RX_SIZE);// See more Start and stop flags
 	}
 /* USER CODE END 4 */
 
