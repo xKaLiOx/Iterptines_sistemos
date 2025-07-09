@@ -38,6 +38,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define UART_OFF 1
+
+#define MyLCD 0
+
 #define NUM_OF_CHANNELS 3
 #define ADC_BUFFER_SIZE 240
 #define UART_BUFFER_SIZE 40
@@ -167,27 +171,27 @@ int main(void)
   	ERROR_FLAG = 1;
   }
 
+#ifndef UART_OFF
   if(HAL_UARTEx_ReceiveToIdle_IT(&huart2, pData_RX, UART_RX_SIZE) != HAL_OK)
   {
   	sprintf(LCD_top_text,"ERROR UART");
   	sprintf(LCD_bottom_text,"CHECK CABLE");
   	ERROR_FLAG = 1;
   }
+#endif
 
-  //HAL_GPIO_WritePin(LUX_VCC_GPIO_Port, LUX_VCC_Pin, GPIO_PIN_SET);// turn on LCD DATA transmission power
   LCD_Init();
-  HAL_Delay(10);
-  LCD_SEND_COMMAND(LCD_DISPLAY_OFF);
-  HAL_Delay(5);
-  LCD_SEND_COMMAND(LCD_Entry_MODE);
-  HAL_Delay(5);
   LCD_SEND_STR(LCD_top_text,0x3,0);
   LCD_SEND_STR(LCD_bottom_text,5,1);
-  LCD_SEND_COMMAND(LCD_SET_DISPLAY_DEFAULT);
-  HAL_Delay(2000);
-  LCD_CLEAR();
-  LCD_SEND_COMMAND(LCD_RETURN_HOME);
-	if(ERROR_FLAG) Error_Handler();//REIKIA PALEISTI TAIMERI TIM6 PRIES ATVAIZDAVIMA, us delay
+  HAL_Delay(1500);
+//  LCD16X2_Init(MyLCD);
+//  LCD16X2_Clear(MyLCD);
+//  LCD16X2_Set_Cursor(MyLCD, 1, 1);
+//  LCD16X2_Write_String(MyLCD, "  DeepBlue");
+//  LCD16X2_Set_Cursor(MyLCD, 2, 1);
+//  LCD16X2_Write_String(MyLCD, "STM32 Course");
+
+  if(ERROR_FLAG) Error_Handler();//REIKIA PALEISTI TAIMERI TIM6 PRIES ATVAIZDAVIMA, us delay
   /* USER CODE END 2 */
 
   /* Infinite loop */

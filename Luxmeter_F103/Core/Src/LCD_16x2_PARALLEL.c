@@ -17,9 +17,12 @@ void SEND_4_BIT(char data, int rsPin)//rs=0 yra instruction register o HIGH(1) d
 	  HAL_GPIO_WritePin(D5_GPIO_Port, D5_Pin, (data>>1)&0x1);
 	  HAL_GPIO_WritePin(D6_GPIO_Port, D6_Pin, (data>>2)&0x1);
 	  HAL_GPIO_WritePin(D7_GPIO_Port, D7_Pin, (data>>3)&0x1);
-	  HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, SET);
-	  DELAY_US(400);
 	  HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, RESET);
+	  DELAY_US(10);
+	  HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, SET);
+	  DELAY_US(10);
+	  HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, RESET);
+	  DELAY_US(200);
 }
 
 void LCD_SEND_COMMAND(char komanda)
@@ -32,6 +35,14 @@ void LCD_SEND_COMMAND(char komanda)
 	  //lower
 	  siuntimas=(komanda)&0x0f;
 	  SEND_4_BIT(siuntimas, LCD_RS_INSTRUCTION);
+	  if(komanda == 0x1 || komanda == 0x02)
+	  {
+		  DELAY_US(2000);
+	  }
+	  else
+	  {
+		  DELAY_US(50);
+	  }
 }
 void LCD_SEND_DATA(char komanda)
 {
@@ -47,6 +58,7 @@ void LCD_SEND_DATA(char komanda)
 
 void LCD_CLEAR()
 {
+	LCD_SEND_COMMAND(0x00);
 	LCD_SEND_COMMAND(LCD_DISPLAY_CLEAR);
 }
 
@@ -66,24 +78,27 @@ void LCD_CLEAR_DRAM()
 
 void LCD_Init()
 {
-	  HAL_Delay(70);
-	  LCD_SEND_COMMAND(0x03);
-	  HAL_Delay(5);
-	  LCD_SEND_COMMAND(0x03);
-	  HAL_Delay(5);
-	  LCD_SEND_COMMAND(0x03);
-	  HAL_Delay(5);
-	  LCD_SEND_COMMAND(0x02);
-	  HAL_Delay(5);
-	  LCD_SEND_COMMAND(LCD_FUNCTION_SET);//x28 kad 2 line
-	  HAL_Delay(5);
-	  LCD_SEND_COMMAND(0x28);
-	  HAL_Delay(5);
-////////////////////////
-	  LCD_SEND_COMMAND(LCD_SET_DISPLAY_DEFAULT);//display
-	  HAL_Delay(5);
-	  LCD_CLEAR();
-
+	HAL_Delay(300);
+	HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(RS_GPIO_Port, RS_Pin,GPIO_PIN_RESET);
+	LCD_SEND_COMMAND(0x00);
+    HAL_Delay(150);
+	LCD_SEND_COMMAND(0x03);
+	HAL_Delay(5);
+	LCD_SEND_COMMAND(0x03);
+	HAL_Delay(5);
+	LCD_SEND_COMMAND(0x03);
+	HAL_Delay(2);
+	//Init Sequence
+	LCD_SEND_COMMAND(0x02);
+	HAL_Delay(2);
+	LCD_SEND_COMMAND(0x20);
+	HAL_Delay(2);
+    LCD_SEND_COMMAND(0x28);  // Function Set: 4-bit, 2 lines, 5x8 dots
+    LCD_SEND_COMMAND(0x08);  // Display OFF (D=0, C=0, B=0)
+    LCD_SEND_COMMAND(0x01);  // Clear Display
+    LCD_SEND_COMMAND(0x06);  // Entry Mode Set: Increment, No shift
+    LCD_SEND_COMMAND(0x0C);  // Display ON, Cursor OFF, Blink OFF
 }
 
 void LCD_SEND_STR(const char data[], unsigned int place, unsigned int level)
